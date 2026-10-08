@@ -61,12 +61,11 @@ section:first-of-type{border-top:none}
 .card .hd .nm{font-family:var(--mono);font-size:.78rem;color:var(--fg);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .v{position:relative;width:100%;height:330px;background:radial-gradient(130% 130% at 65% 25%,#161308,#0a0906)}
 .v canvas{display:block}
-/* pixelated molecule showcase */
-.pixwrap{position:relative;width:100%;height:330px;overflow:hidden;background:radial-gradient(130% 130% at 60% 28%,#171309,#0a0906)}
-.pixinner{position:absolute;top:0;left:0;width:50%;height:50%;transform:scale(2);transform-origin:top left}
-.pixinner .v3d{width:100%;height:100%}
-.pixinner canvas{image-rendering:pixelated}
-.pixtag{position:absolute;right:10px;top:9px;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);background:#0c0b09aa;padding:2px 7px;border-radius:5px;border:1px solid var(--line)}
+/* pixelated molecule showcase: 3Dmol renders crisp and centered underneath, copied into a low-res overlay */
+.pixbox{position:relative;width:100%;height:330px;overflow:hidden;background:radial-gradient(130% 130% at 60% 28%,#171309,#0a0906)}
+.pixbox .v3d{position:absolute;inset:0;opacity:0;pointer-events:none}
+.pixbox canvas.pixel{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
+.pixtag{position:absolute;right:10px;top:9px;z-index:2;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);background:#0c0b09aa;padding:2px 7px;border-radius:5px;border:1px solid var(--line)}
 .vcontrols{display:flex;gap:7px;flex-wrap:wrap;padding:11px 14px;border-top:1px solid var(--line)}
 .chip{font-family:var(--mono);font-size:.7rem;color:var(--muted);background:var(--panel2);border:1px solid var(--line2);border-radius:999px;padding:4px 10px;cursor:pointer}
 .chip:hover{color:var(--fg);border-color:var(--amber)}.chip.on{color:var(--bg);background:var(--amber);border-color:var(--amber)}
@@ -215,7 +214,7 @@ footer .mono{color:var(--fg-dim)}.subtle{color:var(--faint);font-size:.76rem}
       </div>
       <div class="card">
         <div class="hd"><span class="nm" id="esName">HBT</span><span class="pill mut" id="esTag">ESIPT</span></div>
-        <div class="pixwrap"><div class="pixinner"><div class="v3d" id="esV"></div></div><span class="pixtag">voxel view</span></div>
+        <div class="pixbox"><div class="v3d" id="esV"></div><canvas class="pixel" id="esVpix"></canvas><span class="pixtag">voxel view</span></div>
         <div class="vcontrols" id="esChips"></div>
         <dl class="spec" id="esSpec"></dl>
       </div>
@@ -241,7 +240,7 @@ footer .mono{color:var(--fg-dim)}.subtle{color:var(--faint);font-size:.76rem}
       </div>
       <div class="card">
         <div class="hd"><span class="nm" id="mofName">benzene-dicarboxylate</span><span class="pill mut" id="mofTag">Benzene</span></div>
-        <div class="pixwrap"><div class="pixinner"><div class="v3d" id="mofV"></div></div><span class="pixtag">voxel view</span></div>
+        <div class="pixbox"><div class="v3d" id="mofV"></div><canvas class="pixel" id="mofVpix"></canvas><span class="pixtag">voxel view</span></div>
         <div class="vcontrols" id="mofChips"></div>
         <dl class="spec" id="mofSpec"></dl>
       </div>
@@ -9029,8 +9028,8 @@ END
   function mk(el){return window.$3Dmol?$3Dmol.createViewer(el,{backgroundColor:'#0b0906'}):null;}
   var ELEM={O:'#c05a3a',N:'#5f8a86',S:'#cf9a46',B:'#9a8f6a',F:'#8fa06a',CL:'#8fa06a',P:'#bd7f52',BR:'#a85538'};
   function styleMol(v){
-    v.setStyle({},{stick:{radius:0.14,color:'#b4764a'},sphere:{scale:0.26,color:'#b4764a'}});
-    Object.keys(ELEM).forEach(function(e){v.setStyle({elem:e},{stick:{radius:0.14,color:ELEM[e]},sphere:{scale:0.28,color:ELEM[e]}});});
+    v.setStyle({},{stick:{radius:0.16,color:'#b4764a'},sphere:{scale:0.30,color:'#b4764a'}});
+    Object.keys(ELEM).forEach(function(e){v.setStyle({elem:e},{stick:{radius:0.16,color:ELEM[e]},sphere:{scale:0.32,color:ELEM[e]}});});
     v.setStyle({elem:'H'},{});
   }
   function styleProtein(v){
@@ -9047,9 +9046,20 @@ END
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){boot(e.target);io.unobserve(e.target);}})},{rootMargin:'140px'});
   ['heroV','pA','pB'].forEach(function(id){var el=document.getElementById(id);if(el)io.observe(el);});
 
-  // pixelated molecule viewers
-  function pixViewer(innerId){var el=document.getElementById(innerId);var v=mk(el);if(v){setTimeout(function(){try{v.resize();}catch(e){}},30);}return v;}
-  function loadPix(v,pdb){if(!v)return;v.clear();v.addModel(pdb,'pdb');styleMol(v);try{v.resize();}catch(e){}v.zoomTo({},500);v.render();setTimeout(function(){try{v.resize();v.zoomTo();v.render();}catch(e){}},60);if(!reduce)v.spin('y',0.7);}
+  // pixelated molecule viewers: 3Dmol renders crisp + centered into a hidden canvas, copied each frame
+  // into a low-resolution overlay so the result is centered and voxelated regardless of CSS transforms.
+  function makePix(viewerId,pixId){
+    var el=document.getElementById(viewerId);var v=mk(el);if(!v)return null;
+    var pix=document.getElementById(pixId),pctx=pix.getContext('2d'),src=null,frames=0,running=false;
+    function sizePix(){pix.width=Math.max(48,Math.round(el.clientWidth/3));pix.height=Math.max(48,Math.round(el.clientHeight/3));}
+    function frame(){
+      if(!src)src=el.querySelector('canvas');
+      if(src){if(!reduce)v.rotate(0.5,'y');v.render();try{pctx.imageSmoothingEnabled=false;pctx.drawImage(src,0,0,pix.width,pix.height);}catch(e){}frames++;}
+      if(!reduce||frames<8){requestAnimationFrame(frame);}else{running=false;}
+    }
+    return {v:v,restart:function(){try{v.resize();}catch(e){}sizePix();frames=0;if(!running){running=true;requestAnimationFrame(frame);}}};
+  }
+  function loadPix(pv,pdb){if(!pv||!pv.v)return;var v=pv.v;v.clear();v.addModel(pdb,'pdb');styleMol(v);v.zoomTo();v.render();pv.restart();}
 
   // tooltip + scatter
   var tip=document.createElement('div');tip.className='tip';document.body.appendChild(tip);
@@ -9095,9 +9105,9 @@ END
     pick:function(p){pickEs(p);}});
   legend('esLegend',[['reference','#c89445'],['gen3','#8fa06a'],['gen4','#b06a43'],['gen5','#9c8f6f'],['gen6','#718a5d']]);
   var esV=null,esReady=false;
-  function esViewer(){if(!esReady){esReady=true;esV=pixViewer('esV');}return esV;}
+  function esViewer(){if(!esReady){esReady=true;esV=makePix('esV','esVpix');}return esV;}
   function esFind(id){for(var i=0;i<D.esipt.length;i++)if(D.esipt[i].id===id)return D.esipt[i];return null;}
-  function pickEs(p){var key='esipt:'+p.id,pdb=D.pdb[key];var v=esViewer();if(v&&pdb)loadPix(v,pdb);
+  function pickEs(p){var key='esipt:'+p.id,pdb=D.pdb[key];var pv=esViewer();if(pv&&pdb)loadPix(pv,pdb);
     document.getElementById('esName').textContent=p.name;document.getElementById('esTag').textContent=p.cls||'ESIPT';
     document.getElementById('esSpec').innerHTML='<dt>gap</dt><dd>'+p.gap+' eV</dd><dt>dipole</dt><dd>'+p.dip+' D</dd><dt>heavy atoms</dt><dd>'+(p.nh||'-')+'</dd><dt>emission</dt><dd>'+(p.emit?('~'+p.emit+' nm'):'-')+'</dd>'+(p.s1?'<dt>S1 (TD-DFT)</dt><dd>'+Math.round(p.s1)+' nm</dd>':'');
     [].forEach.call(document.querySelectorAll('#esChips .chip'),function(c){c.classList.toggle('on',c.dataset.id===p.id);});}
@@ -9114,9 +9124,9 @@ END
     pick:function(p){pickMof(p);}});
   legend('mofLegend',FAM.map(function(f,i){return [f,EARTH[i%EARTH.length]];}));
   var mofV=null,mofReady=false;
-  function mofViewer(){if(!mofReady){mofReady=true;mofV=pixViewer('mofV');}return mofV;}
+  function mofViewer(){if(!mofReady){mofReady=true;mofV=makePix('mofV','mofVpix');}return mofV;}
   function mofFind(n){for(var i=0;i<D.mof.length;i++)if(D.mof[i].name===n)return D.mof[i];return null;}
-  function pickMof(p){var key='mof:'+p.name,pdb=D.pdb[key];var v=mofViewer();if(v&&pdb)loadPix(v,pdb);
+  function pickMof(p){var key='mof:'+p.name,pdb=D.pdb[key];var pv=mofViewer();if(pv&&pdb)loadPix(pv,pdb);
     document.getElementById('mofName').textContent=p.name;document.getElementById('mofTag').textContent=p.fam;
     document.getElementById('mofSpec').innerHTML='<dt>family</dt><dd>'+p.fam+'</dd><dt>dipole</dt><dd>'+p.dip+' D</dd><dt>polarizability</dt><dd>'+p.pol+'</dd><dt>rings</dt><dd>'+p.rings+'</dd>';
     [].forEach.call(document.querySelectorAll('#mofChips .chip'),function(c){c.classList.toggle('on',c.dataset.n===p.name);});}
