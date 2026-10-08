@@ -63,7 +63,7 @@ section:first-of-type{border-top:none}
 .v canvas{display:block}
 /* pixelated molecule showcase */
 .pixwrap{position:relative;width:100%;height:330px;overflow:hidden;background:radial-gradient(130% 130% at 60% 28%,#171309,#0a0906)}
-.pixinner{position:absolute;top:0;left:0;width:25%;height:25%;transform:scale(4);transform-origin:top left}
+.pixinner{position:absolute;top:0;left:0;width:50%;height:50%;transform:scale(2);transform-origin:top left}
 .pixinner .v3d{width:100%;height:100%}
 .pixinner canvas{image-rendering:pixelated}
 .pixtag{position:absolute;right:10px;top:9px;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);background:#0c0b09aa;padding:2px 7px;border-radius:5px;border:1px solid var(--line)}
@@ -376,6 +376,24 @@ footer .mono{color:var(--fg-dim)}.subtle{color:var(--faint);font-size:.76rem}
       <div class="res"><div class="big">0.70 eV</div><h3>Ladder OECT polymer</h3>
         <p>Band gap of a benzimidazole-benzophenanthroline ladder by periodic DFT with a scaling
         correction, matching the measured 0.7 to 0.9 eV; polaron-stable for n-channel operation.</p></div>
+      <div class="res"><div class="big">18 pts</div><h3>Tunable-Tg polyphosphazene</h3>
+        <p>An 18-point Hammett QSPR over aryloxide substituents, relating electronic descriptors to a
+        target glass transition from 50 to 150 C on a UV-stable backbone.</p></div>
+      <div class="res"><div class="big">~1 eV</div><h3>Carborane siloxane</h3>
+        <p>DFT strain analysis of boron-cage substitution, about 1 eV at 3 percent bond deformation,
+        pointing to a higher service temperature through steric stiffening.</p></div>
+      <div class="res"><div class="big">7,700</div><h3>Super-glassy membrane</h3>
+        <p>A PTMSP-type membrane screened by DFT on its repeat units, placed above the Robeson bound at
+        an O2 permeability of 7,700 Barrer; the open question is arresting physical aging.</p></div>
+      <div class="res"><div class="big">32</div><h3>Masked cytokine scaffold</h3>
+        <p>Thirty-two protease-masked cytokine backbones generated with RFdiffusion3 for tumor-selective
+        activation. Early-stage design; receptor-face verification is the next gate.</p></div>
+    </div>
+    <div class="tiles">
+      <div class="tile"><div class="big">10</div><div class="lab">candidates with physics compute</div></div>
+      <div class="tile"><div class="big">160</div><div class="lab">ORCA calculations across the portfolio</div></div>
+      <div class="tile"><div class="big">4</div><div class="lab">defensible at folder gates</div></div>
+      <div class="tile"><div class="big">3-method</div><div class="lab">coupled-cluster check on the lead</div></div>
     </div>
     <div class="flagrow"><b>Scope.</b> &nbsp;These are in-silico screening results that rank and de-risk
     wet-lab work. Commercialization and patent material behind this portfolio is kept private.</div>
@@ -9031,7 +9049,7 @@ END
 
   // pixelated molecule viewers
   function pixViewer(innerId){var el=document.getElementById(innerId);var v=mk(el);if(v){setTimeout(function(){try{v.resize();}catch(e){}},30);}return v;}
-  function loadPix(v,pdb){if(!v)return;v.clear();v.addModel(pdb,'pdb');styleMol(v);v.zoomTo({},500);v.render();try{v.resize();}catch(e){}if(!reduce)v.spin('y',0.7);}
+  function loadPix(v,pdb){if(!v)return;v.clear();v.addModel(pdb,'pdb');styleMol(v);try{v.resize();}catch(e){}v.zoomTo({},500);v.render();setTimeout(function(){try{v.resize();v.zoomTo();v.render();}catch(e){}},60);if(!reduce)v.spin('y',0.7);}
 
   // tooltip + scatter
   var tip=document.createElement('div');tip.className='tip';document.body.appendChild(tip);
