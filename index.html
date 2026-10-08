@@ -272,6 +272,32 @@ footer .mono{color:var(--fg-dim)}.subtle{color:var(--faint);font-size:.76rem}
         <p class="note">Passed on its first fold, lost the carboxylate on a fresh-seed refold.</p>
       </div>
     </div>
+
+    <h3 style="margin-top:38px">The design in motion</h3>
+    <p>A designed scaffold carried into molecular dynamics. The fold holds and the metal site keeps its
+    coordination across the run, the first check that the geometry is not a static artifact.</p>
+    <div class="split">
+      <div class="card">
+        <div class="hd"><span class="nm">metal-site MD</span><span class="pill mut">trajectory</span></div>
+        <div class="v" id="mdV" style="height:360px"></div>
+        <p class="note">A designed Fe(II) enzyme scaffold of 237 residues, animated over its
+        molecular-dynamics trajectory. Helices copper, sheets sage, the His and acid residues of the
+        metal site in amber.</p>
+      </div>
+      <div class="card">
+        <div class="hd"><span class="nm">run</span><span class="badge-comp">computational</span></div>
+        <dl class="spec" style="border-top:none">
+          <dt>simulation</dt><dd>5 ns, vacuum</dd>
+          <dt>residues</dt><dd>237</dd>
+          <dt>metal site</dt><dd>2-His-1-carboxylate Fe(II)</dd>
+          <dt>frames shown</dt><dd>20</dd>
+          <dt>site</dt><dd>stays coordinated</dd>
+        </dl>
+        <p class="note">Metal-site coordination is tracked through the trajectory. The donors hold the
+        iron over the run, which is what the geometry gate predicts for a design worth taking forward.</p>
+      </div>
+    </div>
+
     <h3 style="margin-top:38px">Design landscape</h3>
     <p>Every scored design, by geometry score against how close the substrate sits to the metal.</p>
     <div class="split">
@@ -9151,6 +9177,9 @@ END
     color:function(p){return vc[p.verdict]||'#8f8367';},
     tip:function(p){return '<b>'+p.id+'</b><br>'+p.verdict+' '+p.score+'/8 &middot; triad '+(p.triad?'yes':'no')+'<br>sub '+(p.sub!=null?p.sub+' A':'-');}});
   legend('dLegend',[['pass','#8fa06a'],['warn','#c89445'],['fail','#8f8367']]);
+
+  // ---- designed enzyme MD trajectory (animated) ----
+  var mdIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('mdV');var v=mk(el);if(v){fetch('enzyme_md.pdb').then(function(r){return r.text();}).then(function(t){v.addModelsAsFrames(t,'pdb');styleProtein(v);v.zoomTo({},700);v.render();if(!reduce)v.animate({loop:'forward',reps:0,interval:120});}).catch(function(){});}mdIO.disconnect();}},{rootMargin:'160px'});var _mdv=document.getElementById('mdV');if(_mdv)mdIO.observe(_mdv);
 
   // ---- polymer (ball and stick) ----
   var polyIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var v=mk(document.getElementById('polyV'));if(v&&D.polymer){v.addModelsAsFrames(D.polymer,'pdb');styleMol(v);v.zoomTo({},700);v.render();if(!reduce){v.animate({loop:'forward',reps:0,interval:55});}}polyIO.disconnect();}},{rootMargin:'140px'});polyIO.observe(document.getElementById('polyV'));
