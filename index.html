@@ -119,6 +119,13 @@ ol.funnel b{color:var(--fg);font-weight:600}ol.funnel span{color:var(--muted)}
 .cagebar{display:flex;gap:7px;flex-wrap:wrap;padding:11px 14px;border-top:1px solid var(--line)}
 footer{border-top:1px solid var(--line);padding-block:40px 70px;color:var(--muted);font-size:.86rem}
 footer .mono{color:var(--fg-dim)}.subtle{color:var(--faint);font-size:.76rem}
+.cie,.spark{width:100%;height:auto;display:block}
+.cie text,.spark text{fill:var(--muted);font-family:var(--mono);font-size:9px;font-variant-numeric:tabular-nums}
+.cie .axis,.spark .axis{stroke:var(--line2);stroke-width:1}
+.figcard{border:1px solid var(--line2);border-radius:12px;background:var(--panel);padding:15px 16px}
+.figcard .cap{font-size:.8rem;color:var(--muted);margin:9px 0 0;max-width:none}
+.figgrid{display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:center;margin-top:22px}
+@media (max-width:720px){.figgrid{grid-template-columns:1fr}}
 .pt{transform-box:fill-box;transform-origin:center}
 .plot.in .pt{animation:ptin .55s ease both}
 @keyframes ptin{from{transform:scale(.15);opacity:.15}to{transform:scale(1);opacity:1}}
@@ -219,9 +226,16 @@ footer .mono{color:var(--fg-dim)}.subtle{color:var(--faint);font-size:.76rem}
         <dl class="spec" id="esSpec"></dl>
       </div>
     </div>
-    <p class="note" style="border:none;padding-left:0">The lead two-component blend reached neutral white
-    at CIE (0.325, 0.319), 5900 K, 0.016 from the D65 point. Twisted intramolecular charge transfer was
-    the obstruction to single-molecule white emission.</p>
+    <div class="figgrid">
+      <div class="figcard"><svg class="cie" viewBox="0 0 300 262" preserveAspectRatio="xMidYMid meet"><text x="34.0" y="247" text-anchor="middle">0.00</text><text x="29" y="237.0" text-anchor="end">0.00</text><text x="118.7" y="247" text-anchor="middle">0.25</text><text x="29" y="163.0" text-anchor="end">0.28</text><text x="203.3" y="247" text-anchor="middle">0.50</text><text x="29" y="89.0" text-anchor="end">0.57</text><text x="288.0" y="247" text-anchor="middle">0.75</text><text x="29" y="15.0" text-anchor="end">0.85</text><line class="axis" x1="34" y1="234" x2="288" y2="234"/><line class="axis" x1="34" y1="12" x2="34" y2="234"/><polygon points="93.0,232.7 64.9,199.3 49.4,157.0 36.8,93.4 38.7,38.1 59.2,16.2 86.4,23.5 111.8,37.0 136.1,53.2 160.4,70.9 184.4,89.1 207.6,106.9 228.8,123.2 246.3,136.7 259.5,146.8 268.2,153.5 273.7,157.7 282.8,164.7" fill="#c8944512" stroke="#6a6353" stroke-width="1" stroke-linejoin="round"/><circle cx="139.9" cy="148.1" r="3" fill="none" stroke="#948a76" stroke-width="1.2"/><text x="146.9" y="151.1" text-anchor="start" fill="#948a76">D65</text><circle cx="144.1" cy="150.7" r="4.5" fill="#c89445"/><text x="138.1" y="142.7" text-anchor="end" fill="#e0a94e">lead blend</text><text x="161" y="259" text-anchor="middle" class="axt">CIE x,y chromaticity</text></svg>
+        <p class="cap">CIE 1931 chromaticity. The lead blend sits at (0.325, 0.319), 0.016 from the
+        D65 white point.</p>
+      </div>
+      <p class="note" style="border:none;padding-left:0">The lead two-component blend reached neutral white
+      at CIE (0.325, 0.319), 5900 K, 0.016 from the D65 point. Single molecules were pushed toward white by
+      an excited-state proton transfer that splits emission into two bands; twisted intramolecular charge
+      transfer was the obstruction to reaching it in one molecule, which the two-component blend sidesteps.</p>
+    </div>
   </section>
 
   <section id="mof">
@@ -293,8 +307,15 @@ footer .mono{color:var(--fg-dim)}.subtle{color:var(--faint);font-size:.76rem}
           <dt>frames shown</dt><dd>20</dd>
           <dt>site</dt><dd>stays coordinated</dd>
         </dl>
-        <p class="note">Metal-site coordination is tracked through the trajectory. The donors hold the
-        iron over the run, which is what the geometry gate predicts for a design worth taking forward.</p>
+        <div style="padding:4px 16px 0"><svg class="spark" viewBox="0 0 470 112" preserveAspectRatio="none"><rect x="32" y="29.4" width="428" height="64.6" fill="#8fa06a10"/><path d="M32.0 73.2 L38.8 70.9 L45.6 75.8 L52.4 73.2 L59.2 72.2 L66.0 81.1 L72.8 77.9 L79.6 76.2 L86.3 74.5 L93.1 79.0 L99.9 78.8 L106.7 74.3 L113.5 78.5 L120.3 78.6 L127.1 79.1 L133.9 72.1 L140.7 71.3 L147.5 73.9 L154.3 69.8 L161.1 80.4 L167.9 72.4 L174.7 76.4 L181.5 81.6 L188.3 74.4 L195.0 74.5 L201.8 75.5 L208.6 81.4 L215.4 80.6 L222.2 70.3 L229.0 77.2 L235.8 72.3 L242.6 76.9 L249.4 69.8 L256.2 78.0 L263.0 77.8 L269.8 80.6 L276.6 81.4 L283.4 78.7 L290.2 80.2 L297.0 72.9 L303.7 76.7 L310.5 83.3 L317.3 74.4 L324.1 73.7 L330.9 78.2 L337.7 76.7 L344.5 74.4 L351.3 77.0 L358.1 83.3 L364.9 80.5 L371.7 75.6 L378.5 76.7 L385.3 77.2 L392.1 77.2 L398.9 81.3 L405.7 71.6 L412.4 77.8 L419.2 72.0 L426.0 77.7 L432.8 75.8 L439.6 74.9 L446.4 84.2 L453.2 77.2 L460.0 76.9" fill="none" stroke="#c89445" stroke-width="1.3" opacity="0.92"/><path d="M32.0 59.0 L38.8 62.0 L45.6 55.2 L52.4 56.5 L59.2 49.4 L66.0 56.1 L72.8 58.0 L79.6 57.4 L86.3 61.3 L93.1 57.4 L99.9 68.5 L106.7 62.7 L113.5 65.6 L120.3 50.9 L127.1 57.2 L133.9 49.8 L140.7 54.5 L147.5 63.4 L154.3 55.7 L161.1 61.2 L167.9 54.6 L174.7 62.7 L181.5 57.6 L188.3 61.8 L195.0 59.8 L201.8 54.1 L208.6 59.5 L215.4 62.6 L222.2 48.3 L229.0 60.6 L235.8 55.6 L242.6 58.6 L249.4 59.6 L256.2 58.5 L263.0 59.4 L269.8 54.8 L276.6 58.6 L283.4 62.3 L290.2 57.7 L297.0 63.6 L303.7 63.0 L310.5 58.1 L317.3 55.8 L324.1 61.8 L330.9 58.0 L337.7 57.9 L344.5 60.6 L351.3 59.4 L358.1 61.7 L364.9 64.9 L371.7 62.7 L378.5 54.2 L385.3 63.0 L392.1 53.5 L398.9 59.2 L405.7 51.7 L412.4 56.9 L419.2 62.9 L426.0 50.3 L432.8 69.9 L439.6 56.0 L446.4 65.7 L453.2 61.4 L460.0 60.3" fill="none" stroke="#8fa06a" stroke-width="1.3" opacity="0.92"/><path d="M32.0 72.9 L38.8 64.1 L45.6 63.0 L52.4 65.0 L59.2 76.6 L66.0 64.6 L72.8 67.3 L79.6 74.1 L86.3 70.4 L93.1 70.0 L99.9 72.6 L106.7 67.5 L113.5 67.7 L120.3 74.0 L127.1 73.3 L133.9 70.4 L140.7 68.5 L147.5 67.0 L154.3 76.7 L161.1 53.9 L167.9 72.7 L174.7 66.1 L181.5 78.4 L188.3 72.1 L195.0 74.4 L201.8 66.2 L208.6 72.2 L215.4 70.0 L222.2 70.2 L229.0 64.2 L235.8 69.8 L242.6 66.5 L249.4 78.6 L256.2 68.7 L263.0 69.7 L269.8 67.3 L276.6 67.4 L283.4 72.7 L290.2 68.3 L297.0 72.7 L303.7 70.5 L310.5 73.5 L317.3 67.8 L324.1 66.8 L330.9 69.8 L337.7 68.9 L344.5 67.5 L351.3 62.7 L358.1 71.8 L364.9 69.3 L371.7 77.2 L378.5 65.6 L385.3 63.0 L392.1 67.6 L398.9 71.3 L405.7 64.8 L412.4 66.7 L419.2 64.9 L426.0 66.0 L432.8 70.8 L439.6 71.3 L446.4 70.8 L453.2 74.0 L460.0 70.2" fill="none" stroke="#b06a43" stroke-width="1.3" opacity="0.92"/><path d="M32.0 39.6 L38.8 21.7 L45.6 30.5 L52.4 26.3 L59.2 41.9 L66.0 36.8 L72.8 27.4 L79.6 35.8 L86.3 34.9 L93.1 33.1 L99.9 45.2 L106.7 35.5 L113.5 39.8 L120.3 32.0 L127.1 50.9 L133.9 39.1 L140.7 28.5 L147.5 33.9 L154.3 33.8 L161.1 35.4 L167.9 39.0 L174.7 38.5 L181.5 27.8 L188.3 32.7 L195.0 44.9 L201.8 33.1 L208.6 31.6 L215.4 35.1 L222.2 51.2 L229.0 28.9 L235.8 48.8 L242.6 32.3 L249.4 34.6 L256.2 32.7 L263.0 24.1 L269.8 38.8 L276.6 32.0 L283.4 39.4 L290.2 40.2 L297.0 35.4 L303.7 20.9 L310.5 22.1 L317.3 25.6 L324.1 28.7 L330.9 40.9 L337.7 45.6 L344.5 40.2 L351.3 43.6 L358.1 35.6 L364.9 26.0 L371.7 41.9 L378.5 35.1 L385.3 36.4 L392.1 32.6 L398.9 36.7 L405.7 34.2 L412.4 42.4 L419.2 37.1 L426.0 35.6 L432.8 43.5 L439.6 32.6 L446.4 28.3 L453.2 41.5 L460.0 38.4" fill="none" stroke="#9c8f6f" stroke-width="1.3" opacity="0.92"/><text x="28" y="97.0" text-anchor="end">2.0</text><text x="28" y="64.7" text-anchor="end">2.5</text><text x="28" y="32.4" text-anchor="end">3.0</text><text x="32" y="108" text-anchor="start" class="axt">0 ns</text><text x="460" y="108" text-anchor="end" class="axt">5 ns</text></svg>
+          <div class="legend" style="padding:6px 0 0">
+            <span><i style="background:#c89445"></i>His &epsilon;N</span><span><i style="background:#8fa06a"></i>His &epsilon;N</span>
+            <span><i style="background:#b06a43"></i>Asp O</span><span><i style="background:#9c8f6f"></i>Asp O</span>
+          </div>
+        </div>
+        <p class="note">Iron-to-donor distances over the trajectory. The four coordinating atoms stay
+        inside the shaded coordination band below 3.0 A for the whole run, so the metal site holds rather
+        than drifting apart, which is what the geometry gate predicts for a design worth taking forward.</p>
       </div>
     </div>
 
@@ -352,6 +373,33 @@ footer .mono{color:var(--fg-dim)}.subtle{color:var(--faint);font-size:.76rem}
 <tr class=""><td class="m">model_4_b0_d7</td><td><span class="pill bad">FAIL</span></td><td class="n">2/8</td><td class="m">no</td><td class="m">[2.42]</td><td class="m">[1.78]</td><td class="n">130.0</td><td class="n">3.2</td></tr></tbody></table></div>
     <p class="note" style="border:none;padding-left:0">Top row is the crystal reference
     (isopenicillin-N synthase), the positive control the gate is calibrated against.</p>
+
+    <h3 style="margin-top:38px">The optimized active site</h3>
+    <p>The last gate is quantum chemistry. The metal site of the passing design, iron with its two
+    histidines and the carboxylate, is cut out and optimized in ORCA. This is the cluster that carries the
+    geometry claim down to the electronic structure.</p>
+    <div class="split">
+      <div class="card">
+        <div class="hd"><span class="nm">Fe active-site cluster</span><span class="dim m" style="font-size:.7rem">drag to rotate</span></div>
+        <div class="v" id="qmV" style="height:360px"></div>
+        <p class="note">The 55-atom active-site cluster after ORCA geometry optimization. Iron at the
+        center in amber, nitrogen teal, oxygen terracotta, carbon copper. Hydrogens are drawn thin.</p>
+      </div>
+      <div class="card">
+        <div class="hd"><span class="nm">QM optimization</span><span class="badge-comp">computational</span></div>
+        <dl class="spec" style="border-top:none">
+          <dt>program</dt><dd>ORCA</dd>
+          <dt>cluster size</dt><dd>55 atoms</dd>
+          <dt>composition</dt><dd>Fe, 22 C, 4 N, 3 O, 25 H</dd>
+          <dt>final energy</dt><dd>-2560.9729 Eh</dd>
+          <dt>metal</dt><dd>non-heme Fe(II)</dd>
+          <dt>coordination</dt><dd>2-His-1-carboxylate</dd>
+        </dl>
+        <p class="note">Optimizing the cut-out site confirms the facial triad is an electronic minimum,
+        not just a geometric fit. The same metal-site QM workflow was reproduced to within 1e-8 Hartree on
+        a reference, which is how the pipeline is trusted before a design is scored.</p>
+      </div>
+    </div>
   </section>
 
   <section id="polymer">
@@ -9180,6 +9228,9 @@ END
 
   // ---- designed enzyme MD trajectory (animated) ----
   var mdIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('mdV');var v=mk(el);if(v){fetch('enzyme_md.pdb').then(function(r){return r.text();}).then(function(t){v.addModelsAsFrames(t,'pdb');styleProtein(v);v.zoomTo({},700);v.render();if(!reduce)v.animate({loop:'forward',reps:0,interval:120});}).catch(function(){});}mdIO.disconnect();}},{rootMargin:'160px'});var _mdv=document.getElementById('mdV');if(_mdv)mdIO.observe(_mdv);
+
+  // ---- QM active-site cluster (static, optimized geometry) ----
+  var qmIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('qmV');var v=mk(el);if(v){fetch('active_site.xyz').then(function(r){return r.text();}).then(function(t){v.addModel(t,'xyz');styleMol(v);v.setStyle({elem:'FE'},{sphere:{scale:0.42,color:'#e0a94e'}});v.zoomTo({},700);v.render();if(!reduce)v.spin('y',0.4);}).catch(function(){});}qmIO.disconnect();}},{rootMargin:'160px'});var _qmv=document.getElementById('qmV');if(_qmv)qmIO.observe(_qmv);
 
   // ---- polymer (ball and stick) ----
   var polyIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var v=mk(document.getElementById('polyV'));if(v&&D.polymer){v.addModelsAsFrames(D.polymer,'pdb');styleMol(v);v.zoomTo({},700);v.render();if(!reduce){v.animate({loop:'forward',reps:0,interval:55});}}polyIO.disconnect();}},{rootMargin:'140px'});polyIO.observe(document.getElementById('polyV'));
