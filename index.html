@@ -374,6 +374,31 @@ footer .mono{color:var(--fg-dim)}.subtle{color:var(--faint);font-size:.76rem}
     <p class="note" style="border:none;padding-left:0">Top row is the crystal reference
     (isopenicillin-N synthase), the positive control the gate is calibrated against.</p>
 
+    <h3 style="margin-top:38px">The target motif</h3>
+    <p>Before any backbone exists, the design has a target: a 2-His-1-carboxylate facial triad around a
+    non-heme iron, the geometry that aromatic-ring hydroxylases use. This reference cluster is what every
+    design is scored against and what a passing fold has to rebuild. <span class="badge-comp">computational</span></p>
+    <div class="split">
+      <div class="card">
+        <div class="hd"><span class="nm">2-His-1-carboxylate Fe</span><span class="dim m" style="font-size:.7rem">drag to rotate</span></div>
+        <div class="v" id="motifV" style="height:340px"></div>
+        <p class="note">The reference facial-triad motif, 41 atoms around a single iron. Iron in amber,
+        the two histidine nitrogens teal, the carboxylate oxygens terracotta.</p>
+      </div>
+      <div class="card">
+        <div class="hd"><span class="nm">the geometry gate</span></div>
+        <dl class="spec" style="border-top:none">
+          <dt>coordination</dt><dd>2-His-1-carboxylate</dd>
+          <dt>metal</dt><dd>non-heme Fe(II)</dd>
+          <dt>cluster size</dt><dd>41 atoms</dd>
+          <dt>role</dt><dd>scoring reference</dd>
+        </dl>
+        <p class="note">A design passes only if its refolded structure rebuilds this triad with donor
+        distances and triad angles in range and the substrate within near-attack distance. The motif is
+        the standard; the scorecard above is every design read against it.</p>
+      </div>
+    </div>
+
     <h3 style="margin-top:38px">The optimized active site</h3>
     <p>The last gate is quantum chemistry. The metal site of the passing design, iron with its two
     histidines and the carboxylate, is cut out and optimized in ORCA. This is the cluster that carries the
@@ -555,6 +580,9 @@ footer .mono{color:var(--fg-dim)}.subtle{color:var(--faint);font-size:.76rem}
       <div class="repo"><div class="top"><h3>biodesign-env</h3><span class="st plan">planned</span></div>
         <p>Parameterized installer for the ORCA, OpenMPI, and CUDA toolchain behind the pipelines.</p>
         <span class="lnk dim">packaging</span></div>
+      <div class="repo"><div class="top"><h3>reaction-transformer</h3><span class="st plan">planned</span></div>
+        <p>Sequence-to-sequence transformer for reaction prediction, trained on about 909,000 reactions.
+        Forward top-1 62.5 %, retrosynthesis top-1 38.2 %.</p><span class="lnk dim">packaging</span></div>
     </div>
     <div class="flagrow"><b>Applied / client work.</b> &nbsp;Docking, ADMET, and molecular-dynamics
     studies delivered for external parties are held under confidentiality. The capability is real; the
@@ -9228,6 +9256,9 @@ END
 
   // ---- designed enzyme MD trajectory (animated) ----
   var mdIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('mdV');var v=mk(el);if(v){fetch('enzyme_md.pdb').then(function(r){return r.text();}).then(function(t){v.addModelsAsFrames(t,'pdb');styleProtein(v);v.zoomTo({},700);v.render();if(!reduce)v.animate({loop:'forward',reps:0,interval:120});}).catch(function(){});}mdIO.disconnect();}},{rootMargin:'160px'});var _mdv=document.getElementById('mdV');if(_mdv)mdIO.observe(_mdv);
+
+  // ---- target motif cluster (reference facial triad) ----
+  var motifIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('motifV');var v=mk(el);if(v){fetch('motif_site.xyz').then(function(r){return r.text();}).then(function(t){v.addModel(t,'xyz');styleMol(v);v.setStyle({elem:'FE'},{sphere:{scale:0.42,color:'#e0a94e'}});v.zoomTo({},700);v.render();if(!reduce)v.spin('y',0.4);}).catch(function(){});}motifIO.disconnect();}},{rootMargin:'160px'});var _mfv=document.getElementById('motifV');if(_mfv)motifIO.observe(_mfv);
 
   // ---- QM active-site cluster (static, optimized geometry) ----
   var qmIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('qmV');var v=mk(el);if(v){fetch('active_site.xyz').then(function(r){return r.text();}).then(function(t){v.addModel(t,'xyz');styleMol(v);v.setStyle({elem:'FE'},{sphere:{scale:0.42,color:'#e0a94e'}});v.zoomTo({},700);v.render();if(!reduce)v.spin('y',0.4);}).catch(function(){});}qmIO.disconnect();}},{rootMargin:'160px'});var _qmv=document.getElementById('qmV');if(_qmv)qmIO.observe(_qmv);
