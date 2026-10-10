@@ -9160,6 +9160,8 @@ END
   function styleMol(v){
     v.setStyle({},{stick:{radius:0.16,color:'#b4764a'},sphere:{scale:0.30,color:'#b4764a'}});
     Object.keys(ELEM).forEach(function(e){v.setStyle({elem:e},{stick:{radius:0.16,color:ELEM[e]},sphere:{scale:0.32,color:ELEM[e]}});});
+    v.setStyle({elem:'Fe'},{sphere:{scale:0.42,color:'#e6a23c'},stick:{radius:0.16,color:'#e6a23c'}});
+    v.setStyle({elem:'FE'},{sphere:{scale:0.42,color:'#e6a23c'},stick:{radius:0.16,color:'#e6a23c'}});
     v.setStyle({elem:'H'},{});
   }
   function styleProtein(v){
@@ -9284,10 +9286,10 @@ END
   var mdIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('mdV');var v=mk(el);if(v){fetch('enzyme_md.pdb').then(function(r){return r.text();}).then(function(t){v.addModelsAsFrames(t,'pdb');styleProtein(v);v.zoomTo({},700);v.render();if(!reduce)v.animate({loop:'forward',reps:0,interval:120});}).catch(function(){});}mdIO.disconnect();}},{rootMargin:'160px'});var _mdv=document.getElementById('mdV');if(_mdv)mdIO.observe(_mdv);
 
   // ---- target motif cluster (reference facial triad) ----
-  var motifIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('motifV');var v=mk(el);if(v){fetch('motif_site.xyz').then(function(r){return r.text();}).then(function(t){v.addModel(t,'xyz');styleMol(v);v.setStyle({elem:'FE'},{sphere:{scale:0.42,color:'#e0a94e'}});v.zoomTo({},700);v.render();if(!reduce)v.spin('y',0.4);}).catch(function(){});}motifIO.disconnect();}},{rootMargin:'160px'});var _mfv=document.getElementById('motifV');if(_mfv)motifIO.observe(_mfv);
+  var motifIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('motifV');var v=mk(el);if(v){fetch('motif_site.xyz').then(function(r){return r.text();}).then(function(t){v.addModel(t,'xyz');styleMol(v);v.setStyle({elem:'H'},{stick:{radius:0.05,color:'#c9bda2'}});v.zoomTo({},700);v.render();if(!reduce)v.spin('y',0.4);}).catch(function(){});}motifIO.disconnect();}},{rootMargin:'160px'});var _mfv=document.getElementById('motifV');if(_mfv)motifIO.observe(_mfv);
 
   // ---- QM active-site cluster (static, optimized geometry) ----
-  var qmIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('qmV');var v=mk(el);if(v){fetch('active_site.xyz').then(function(r){return r.text();}).then(function(t){v.addModel(t,'xyz');styleMol(v);v.setStyle({elem:'FE'},{sphere:{scale:0.42,color:'#e0a94e'}});v.zoomTo({},700);v.render();if(!reduce)v.spin('y',0.4);}).catch(function(){});}qmIO.disconnect();}},{rootMargin:'160px'});var _qmv=document.getElementById('qmV');if(_qmv)qmIO.observe(_qmv);
+  var qmIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('qmV');var v=mk(el);if(v){fetch('active_site.xyz').then(function(r){return r.text();}).then(function(t){v.addModel(t,'xyz');styleMol(v);v.setStyle({elem:'H'},{stick:{radius:0.05,color:'#c9bda2'}});v.zoomTo({},700);v.render();if(!reduce)v.spin('y',0.4);}).catch(function(){});}qmIO.disconnect();}},{rootMargin:'160px'});var _qmv=document.getElementById('qmV');if(_qmv)qmIO.observe(_qmv);
 
   // ---- polymer (ball and stick) ----
   var polyIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var v=mk(document.getElementById('polyV'));if(v&&D.polymer){v.addModelsAsFrames(D.polymer,'pdb');styleMol(v);v.zoomTo({},700);v.render();if(!reduce){v.animate({loop:'forward',reps:0,interval:55});}}polyIO.disconnect();}},{rootMargin:'140px'});polyIO.observe(document.getElementById('polyV'));
