@@ -1,3 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Krishna Kant's computational lab notebook: interactive 3D structures, DFT and MD data, and de novo metalloenzyme design results.">
+<meta name="theme-color" content="#0c0b09">
+<meta property="og:title" content="Computational Lab Notebook">
+<meta property="og:description" content="Molecular simulation and design work: emitters, MOF linkers, de novo metalloenzymes, polymers, nanocages, docking.">
+<meta property="og:type" content="website">
 <title>Computational Lab Notebook</title>
 <style>
 /* A quiet computational laboratory at night. Warm charcoal ground, oxidized-metal and dusty-amber
@@ -61,13 +71,15 @@ section:first-of-type{border-top:none}
 .card .hd .nm{font-family:var(--mono);font-size:.78rem;color:var(--fg);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .v{position:relative;width:100%;height:330px;background:radial-gradient(130% 130% at 65% 25%,#161308,#0a0906)}
 .v canvas{display:block}
+.vfail{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:.72rem}
 /* pixelated molecule showcase: 3Dmol renders crisp and centered underneath, copied into a low-res overlay */
 .pixbox{position:relative;width:100%;height:330px;overflow:hidden;background:radial-gradient(130% 130% at 60% 28%,#171309,#0a0906)}
 .pixbox .v3d{position:absolute;inset:0;opacity:0;pointer-events:none}
 .pixbox canvas.pixel{position:absolute;inset:0;width:100%;height:100%}
 .pixtag{position:absolute;right:10px;top:9px;z-index:2;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);background:#0c0b09aa;padding:2px 7px;border-radius:5px;border:1px solid var(--line)}
 .vcontrols{display:flex;gap:7px;flex-wrap:wrap;padding:11px 14px;border-top:1px solid var(--line)}
-.chip{font-family:var(--mono);font-size:.7rem;color:var(--muted);background:var(--panel2);border:1px solid var(--line2);border-radius:999px;padding:4px 10px;cursor:pointer}
+.chip{font-family:var(--mono);line-height:1.62;font-size:.7rem;color:var(--muted);background:var(--panel2);border:1px solid var(--line2);border-radius:999px;padding:4px 10px;cursor:pointer}
+.chip:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 .chip:hover{color:var(--fg);border-color:var(--amber)}.chip.on{color:var(--bg);background:var(--amber);border-color:var(--amber)}
 dl.spec{margin:0;padding:13px 16px;display:grid;grid-template-columns:auto 1fr;gap:4px 16px;font-size:.82rem;border-top:1px solid var(--line)}
 dl.spec dt{color:var(--muted);font-family:var(--mono);font-size:.72rem}dl.spec dd{margin:0;font-family:var(--mono);text-align:right}
@@ -140,6 +152,8 @@ footer .mono{color:var(--fg-dim)}.subtle{color:var(--faint);font-size:.76rem}
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 
+</head>
+<body>
 <nav class="z">
   <span class="lab"><b>Krishna Kant</b> &middot; computational lab notebook</span>
   <span class="links">
@@ -9155,7 +9169,8 @@ END
   var EARTH=['#c89445','#8fa06a','#b06a43','#9c8f6f','#718a5d','#bd7f52','#9a9a52','#a85538','#cbb06a','#6e8c5a'];
   var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   var css=function(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();};
-  function mk(el){return window.$3Dmol?$3Dmol.createViewer(el,{backgroundColor:'#0b0906'}):null;}
+  function mk(el){if(!el)return null;if(!window.$3Dmol){if(!el.querySelector('.vfail')){var m=document.createElement('div');m.className='vfail';m.textContent='3D viewer unavailable (3Dmol.js failed to load)';el.appendChild(m);}return null;}return $3Dmol.createViewer(el,{backgroundColor:'#0b0906'});}
+  function txt(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.text();}
   var ELEM={O:'#c05a3a',N:'#5f8a86',S:'#cf9a46',B:'#9a8f6a',F:'#8fa06a',CL:'#8fa06a',P:'#bd7f52',BR:'#a85538'};
   function styleMol(v){
     v.setStyle({},{stick:{radius:0.16,color:'#b4764a'},sphere:{scale:0.30,color:'#b4764a'}});
@@ -9250,8 +9265,8 @@ END
   function pickEs(p){var key='esipt:'+p.id,pdb=D.pdb[key];var pv=esViewer();if(pv&&pdb)loadPix(pv,pdb);
     document.getElementById('esName').textContent=p.name;document.getElementById('esTag').textContent=p.cls||'ESIPT';
     document.getElementById('esSpec').innerHTML='<dt>gap</dt><dd>'+p.gap+' eV</dd><dt>dipole</dt><dd>'+p.dip+' D</dd><dt>heavy atoms</dt><dd>'+(p.nh||'-')+'</dd><dt>emission</dt><dd>'+(p.emit?('~'+p.emit+' nm'):'-')+'</dd>'+(p.s1?'<dt>S1 (TD-DFT)</dt><dd>'+Math.round(p.s1)+' nm</dd>':'');
-    [].forEach.call(document.querySelectorAll('#esChips .chip'),function(c){c.classList.toggle('on',c.dataset.id===p.id);});}
-  document.getElementById('esChips').innerHTML=D.esChips.map(function(id){var e=esFind(id);return '<span class="chip" data-id="'+id+'">'+(e?e.name:id)+'</span>';}).join('');
+    [].forEach.call(document.querySelectorAll('#esChips .chip'),function(c){c.classList.toggle('on',c.dataset.id===p.id);c.setAttribute('aria-pressed',c.dataset.id===p.id);});}
+  document.getElementById('esChips').innerHTML=D.esChips.map(function(id){var e=esFind(id);return '<button type="button" class="chip" data-id="'+id+'">'+(e?e.name:id)+'</button>';}).join('');
   [].forEach.call(document.querySelectorAll('#esChips .chip'),function(c){c.addEventListener('click',function(){var e=esFind(c.dataset.id);if(e)pickEs(e);});});
   var esIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var e0=esFind(D.esChips[0]);if(e0)pickEs(e0);esIO.disconnect();}},{rootMargin:'140px'});esIO.observe(document.getElementById('esV'));
 
@@ -9269,8 +9284,8 @@ END
   function pickMof(p){var key='mof:'+p.name,pdb=D.pdb[key];var pv=mofViewer();if(pv&&pdb)loadPix(pv,pdb);
     document.getElementById('mofName').textContent=p.name;document.getElementById('mofTag').textContent=p.fam;
     document.getElementById('mofSpec').innerHTML='<dt>family</dt><dd>'+p.fam+'</dd><dt>dipole</dt><dd>'+p.dip+' D</dd><dt>polarizability</dt><dd>'+p.pol+'</dd><dt>rings</dt><dd>'+p.rings+'</dd>';
-    [].forEach.call(document.querySelectorAll('#mofChips .chip'),function(c){c.classList.toggle('on',c.dataset.n===p.name);});}
-  document.getElementById('mofChips').innerHTML=D.mofChips.map(function(n){return '<span class="chip" data-n="'+n+'">'+n+'</span>';}).join('');
+    [].forEach.call(document.querySelectorAll('#mofChips .chip'),function(c){c.classList.toggle('on',c.dataset.n===p.name);c.setAttribute('aria-pressed',c.dataset.n===p.name);});}
+  document.getElementById('mofChips').innerHTML=D.mofChips.map(function(n){return '<button type="button" class="chip" data-n="'+n+'">'+n+'</button>';}).join('');
   [].forEach.call(document.querySelectorAll('#mofChips .chip'),function(c){c.addEventListener('click',function(){var m=mofFind(c.dataset.n);if(m)pickMof(m);});});
   var mofIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var m0=mofFind(D.mofChips[0]);if(m0)pickMof(m0);mofIO.disconnect();}},{rootMargin:'140px'});mofIO.observe(document.getElementById('mofV'));
 
@@ -9283,13 +9298,13 @@ END
   legend('dLegend',[['pass','#8fa06a'],['warn','#c89445'],['fail','#8f8367']]);
 
   // ---- designed enzyme MD trajectory (animated) ----
-  var mdIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('mdV');var v=mk(el);if(v){fetch('enzyme_md.pdb').then(function(r){return r.text();}).then(function(t){v.addModelsAsFrames(t,'pdb');styleProtein(v);v.zoomTo({},700);v.render();if(!reduce)v.animate({loop:'forward',reps:0,interval:120});}).catch(function(){});}mdIO.disconnect();}},{rootMargin:'160px'});var _mdv=document.getElementById('mdV');if(_mdv)mdIO.observe(_mdv);
+  var mdIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('mdV');var v=mk(el);if(v){fetch('enzyme_md.pdb').then(txt).then(function(t){v.addModelsAsFrames(t,'pdb');styleProtein(v);v.zoomTo({},700);v.render();if(!reduce)v.animate({loop:'forward',reps:0,interval:120});}).catch(function(){});}mdIO.disconnect();}},{rootMargin:'160px'});var _mdv=document.getElementById('mdV');if(_mdv)mdIO.observe(_mdv);
 
   // ---- target motif cluster (reference facial triad) ----
-  var motifIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('motifV');var v=mk(el);if(v){fetch('motif_site.xyz').then(function(r){return r.text();}).then(function(t){v.addModel(t,'xyz');styleMol(v);v.setStyle({elem:'H'},{stick:{radius:0.05,color:'#c9bda2'}});v.zoomTo({},700);v.render();if(!reduce)v.spin('y',0.4);}).catch(function(){});}motifIO.disconnect();}},{rootMargin:'160px'});var _mfv=document.getElementById('motifV');if(_mfv)motifIO.observe(_mfv);
+  var motifIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('motifV');var v=mk(el);if(v){fetch('motif_site.xyz').then(txt).then(function(t){v.addModel(t,'xyz');styleMol(v);v.setStyle({elem:'H'},{stick:{radius:0.05,color:'#c9bda2'}});v.zoomTo({},700);v.render();if(!reduce)v.spin('y',0.4);}).catch(function(){});}motifIO.disconnect();}},{rootMargin:'160px'});var _mfv=document.getElementById('motifV');if(_mfv)motifIO.observe(_mfv);
 
   // ---- QM active-site cluster (static, optimized geometry) ----
-  var qmIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('qmV');var v=mk(el);if(v){fetch('active_site.xyz').then(function(r){return r.text();}).then(function(t){v.addModel(t,'xyz');styleMol(v);v.setStyle({elem:'H'},{stick:{radius:0.05,color:'#c9bda2'}});v.zoomTo({},700);v.render();if(!reduce)v.spin('y',0.4);}).catch(function(){});}qmIO.disconnect();}},{rootMargin:'160px'});var _qmv=document.getElementById('qmV');if(_qmv)qmIO.observe(_qmv);
+  var qmIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var el=document.getElementById('qmV');var v=mk(el);if(v){fetch('active_site.xyz').then(txt).then(function(t){v.addModel(t,'xyz');styleMol(v);v.setStyle({elem:'H'},{stick:{radius:0.05,color:'#c9bda2'}});v.zoomTo({},700);v.render();if(!reduce)v.spin('y',0.4);}).catch(function(){});}qmIO.disconnect();}},{rootMargin:'160px'});var _qmv=document.getElementById('qmV');if(_qmv)qmIO.observe(_qmv);
 
   // ---- polymer (ball and stick) ----
   var polyIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){var v=mk(document.getElementById('polyV'));if(v&&D.polymer){v.addModelsAsFrames(D.polymer,'pdb');styleMol(v);v.zoomTo({},700);v.render();if(!reduce){v.animate({loop:'forward',reps:0,interval:55});}}polyIO.disconnect();}},{rootMargin:'140px'});polyIO.observe(document.getElementById('polyV'));
@@ -9310,9 +9325,9 @@ END
     if(cageBusy)return; cageBusy=true;
     document.getElementById('cageName').innerHTML=label+' &nbsp;<span class="dim" style="font-size:.72rem">building full assembly...</span>';
     if(!cageV)cageV=mk(document.getElementById('cageV'));
-    if(!cageV){cageBusy=false;return;}
-    [].forEach.call(document.querySelectorAll('#cageBar .chip'),function(c){c.classList.toggle('on',c.dataset.f===file);});
-    fetch(file+'.cif').then(function(r){return r.text();}).then(function(t){
+    if(!cageV){document.getElementById('cageName').textContent=label.replace(/ &middot;.*/,'')+' (3D viewer unavailable)';cageBusy=false;return;}
+    [].forEach.call(document.querySelectorAll('#cageBar .chip'),function(c){c.classList.toggle('on',c.dataset.f===file);c.setAttribute('aria-pressed',c.dataset.f===file);});
+    fetch(file+'.cif').then(txt).then(function(t){
       setTimeout(function(){
         try{
           cageV.clear();
@@ -9330,8 +9345,10 @@ END
       },30);
     }).catch(function(){document.getElementById('cageName').textContent='structure unavailable';cageBusy=false;});
   }
-  document.getElementById('cageBar').innerHTML=cages.map(function(c){return '<span class="chip" data-f="'+c[0]+'">'+c[1].replace(' &middot; largest capsid',' (largest)')+'</span>';}).join('');
+  document.getElementById('cageBar').innerHTML=cages.map(function(c){return '<button type="button" class="chip" data-f="'+c[0]+'">'+c[1].replace(' &middot; largest capsid',' (largest)')+'</button>';}).join('');
   [].forEach.call(document.querySelectorAll('#cageBar .chip'),function(c){c.addEventListener('click',function(){var cc=cages.filter(function(x){return x[0]===c.dataset.f;})[0];renderCage(cc[0],cc[1]);});});
   var cageIO=new IntersectionObserver(function(e){if(e[0].isIntersecting){renderCage('arch_008','4EGG');cageIO.disconnect();}},{rootMargin:'160px'});cageIO.observe(document.getElementById('cageV'));
 })();
 </script>
+</body>
+</html>
